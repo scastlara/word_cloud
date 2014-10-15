@@ -192,6 +192,13 @@ sub make_wc {
 		$color = '8F6048'; # abst -> brown
 	}
 
+	if (-d 'word_cloud') {
+		$name = "word_cloud/$name";
+		print STDERR "\nSaving files in word_cloud/\n";
+	} else {
+		print STDERR "\nword_cloud/ directory doesn't exist, saving files in current directory\n";
+	}
+
 	my $wioz = App::WIoZ->new(
 		font_min => 12, font_max => 64,
 		set_font => "DejaVuSans,normal,bold",
