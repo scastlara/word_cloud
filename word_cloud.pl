@@ -200,7 +200,7 @@ sub make_wc {
 	}
 
 	my $wioz = App::WIoZ->new(
-		font_min => 12, font_max => 64,
+		font_min => 12, font_max => 42,
 		set_font => "DejaVuSans,normal,bold",
 		svg => 0,
 		filename => "$name",
