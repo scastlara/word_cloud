@@ -132,14 +132,14 @@ sub read_file {
 
 
 #--------------------------------------------------------------------------------
-sub filter_hash { # gets 10% of most common words 
+sub filter_hash { # gets 20% of most common words 
 	
 	my $words_hash   = shift;
 	my %smaller_hash = ();
-	my $stop_num 	 = int(scalar(keys %{$words_hash}) * 0.1); 
+	my $stop_num 	 = int(scalar(keys %{$words_hash}) * 0.15); 
+	
 	my $i = 0;
 
-	print "$stop_num\n";
 	foreach my $key (sort {$words_hash->{$b} cmp $words_hash->{$a}} (keys %{ $words_hash }) ) {
 		last if ($i == $stop_num);
 		$smaller_hash{$key} = $words_hash->{$key};
@@ -168,7 +168,7 @@ sub create_tmp {
 	open my $tmp_fh, '>', $tmp_name
 		or die "Can't create $tmp_name : $!\n";
 
-	foreach my $word (keys %{$words_hash}) {
+	foreach my $word (sort {$words_hash->{$b} <=> $words_hash->{$a}} keys %{$words_hash}) {
 		print $tmp_fh "$word;$words_hash->{$word}\n";
 	}
 
@@ -202,10 +202,10 @@ sub make_wc {
 	}
 
 	my $wioz = App::WIoZ->new(
-		font_min => 12, font_max => 50,
+		font_min => 14, font_max => 64,
 		set_font => "DejaVuSans,normal,bold",
 		svg => 0,
-		scale => 8,
+		scale => 10,
 		filename => "$name",
 		basecolor => "$color"
 	);
