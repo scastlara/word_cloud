@@ -205,7 +205,7 @@ sub make_wc {
 		font_min => 12, font_max => 50,
 		set_font => "DejaVuSans,normal,bold",
 		svg => 0,
-		scale => 8,
+		scale => 15,
 		filename => "$name",
 		basecolor => "$color"
 	);
@@ -214,3 +214,4 @@ sub make_wc {
 	$wioz->do_layout(@words);
 
 } # sub make_wc
+
