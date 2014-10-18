@@ -132,7 +132,7 @@ sub read_file {
 
 
 #--------------------------------------------------------------------------------
-sub filter_hash { # gets 20% of most common words 
+sub filter_hash { # gets 15% of most common words 
 	
 	my $words_hash   = shift;
 	my %smaller_hash = ();
