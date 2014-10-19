@@ -139,9 +139,11 @@ sub filter_hash { # gets 15% of most common words
 	my $stop_num 	 = int(scalar(keys %{$words_hash}) * 0.15); 
 	
 	my $i = 0;
+	print "$stop_num\n";
 
 	foreach my $key (sort {$words_hash->{$b} cmp $words_hash->{$a}} (keys %{ $words_hash }) ) {
-		last if ($i == $stop_num);
+		last if ($i == $stop_num or $i == 100);
+			# if words > 100, the program becomes too slow
 		$smaller_hash{$key} = $words_hash->{$key};
 		$i++;
 	} # foreach
@@ -205,7 +207,6 @@ sub make_wc {
 		font_min => 14, font_max => 64,
 		set_font => "DejaVuSans,normal,bold",
 		svg => 0,
-		scale => 10,
 		filename => "$name",
 		basecolor => "$color"
 	);
