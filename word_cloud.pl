@@ -51,11 +51,11 @@ my %stopwords = ();
 
 read_stopwords($stop_file, \%stopwords);
 
-my ($id, $type)  = get_name($in_file);
+my ($out_name, $type)  = get_name($in_file);
 my %text_words   = read_file($in_file, \%stopwords);
 my %common_words = filter_hash(\%text_words);
 
-my $tmp_name = create_tmp($id, $type, \%common_words);
+my $tmp_name = create_tmp($out_name, $type, \%common_words);
 make_wc($tmp_name, $type);
 
 
@@ -89,17 +89,13 @@ sub get_name {
 
 	my $in_file = shift;
 	my $type    = 0;
-	my $id      = "";
 
-	if ($in_file =~ m/(\d+)/g) {
-		$id = $1;
-	} else {
-		print "Wrong file name! $in_file != PMID_#####_Author.txt\n";
-	} # if
+	$in_file =~ s/\.txt/\.tmp/g
+		or die "Wrong file name!\nIt should be \"PMID_####_Author.txt\"\n";
 
 	$type = 1 if ($in_file =~ m/abstract/g);
 
-	return($id, $type);
+	return($in_file, $type);
 
 } # sub get_name
 
@@ -156,16 +152,12 @@ sub filter_hash { # gets 15% of most common words
 #--------------------------------------------------------------------------------
 sub create_tmp {
 	
-	my $id 		   = shift;
+	my $out_name   = shift;
 	my $type 	   = shift;
 	my $words_hash = shift;
 	my $tmp_name   = "";
 
-	if ($type == 0) {
-		$tmp_name = "${id}_epub_words.tmp";
-	} else {
-		$tmp_name = "${id}_abstract_words.tmp";
-	} # if
+	$tmp_name = "${out_name}.tmp";	
 
 	open my $tmp_fh, '>', $tmp_name
 		or die "Can't create $tmp_name : $!\n";
