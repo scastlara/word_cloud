@@ -90,9 +90,11 @@ sub get_name {
 	my $in_file = shift;
 	my $type    = 0;
 
-	$in_file =~ s/\.txt/\.tmp/g
+	$in_file =~ s/\.txt//g
 		or die "Wrong file name!\nIt should be \"PMID_####_Author.txt\"\n";
 
+	$in_file =~ s/.+\///g;
+	
 	$type = 1 if ($in_file =~ m/abstract/g);
 
 	return($in_file, $type);
@@ -135,7 +137,6 @@ sub filter_hash { # gets 15% of most common words
 	my $stop_num 	 = int(scalar(keys %{$words_hash}) * 0.15); 
 	
 	my $i = 0;
-	print "$stop_num\n";
 
 	foreach my $key (sort {$words_hash->{$b} cmp $words_hash->{$a}} (keys %{ $words_hash }) ) {
 		last if ($i == $stop_num or $i == 100);
