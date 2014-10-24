@@ -52,6 +52,9 @@ my %stopwords = ();
 read_stopwords($stop_file, \%stopwords);
 
 my ($out_name, $type)  = get_name($in_file);
+
+print STDERR "# $out_name\n";
+
 my %text_words   = read_file($in_file, \%stopwords);
 my %common_words = filter_hash(\%text_words);
 
@@ -124,7 +127,7 @@ sub read_file {
 
 	} # while
 
-	die "Empty txt file!\n" unless (%text_words);
+	die "Empty txt file!\n\n" unless (%text_words);
 	return(%text_words);
 
 } # sub read_file
@@ -137,10 +140,16 @@ sub filter_hash { # gets 15% of most common words
 	my %smaller_hash = ();
 	my $stop_num 	 = int(scalar(keys %{$words_hash}) * 0.15); 
 	
+	if ($stop_num < 5) {
+		$stop_num = 10;
+	} elsif ($stop_num > 100) {
+		$stop_num = 100;
+	}
+
 	my $i = 0;
 
 	foreach my $key (sort {$words_hash->{$b} cmp $words_hash->{$a}} (keys %{ $words_hash }) ) {
-		last if ($i == $stop_num or $i == 100);
+		last if ($i == $stop_num);
 			# if words > 100, the program becomes too slow
 		$smaller_hash{$key} = $words_hash->{$key};
 		$i++;
@@ -163,6 +172,12 @@ sub create_tmp {
 
 	open my $tmp_fh, '>', $tmp_name
 		or die "Can't create $tmp_name : $!\n";
+	
+	my ($first_elem) = sort {$words_hash->{$b} <=> $words_hash->{$a}} keys %{$words_hash};
+
+	if ($words_hash->{$first_elem} == 1) {
+		$words_hash->{$first_elem} = 2;
+	}
 
 	foreach my $word (sort {$words_hash->{$b} <=> $words_hash->{$a}} keys %{$words_hash}) {
 		print $tmp_fh "$word;$words_hash->{$word}\n";
@@ -192,9 +207,9 @@ sub make_wc {
 
 	if (-d 'word_cloud') {
 		$name = "word_cloud/$name";
-		print STDERR "\nSaving $name file in word_cloud/\n";
+		print STDERR "Saving $name file in word_cloud/\n\n";
 	} else {
-		print STDERR "\nword_cloud/ directory doesn't exist, saving $name file in current directory\n";
+		print STDERR "word_cloud/ directory doesn't exist, saving $name file in current directory\n\n";
 	}
 
 	my $wioz = App::WIoZ->new(
