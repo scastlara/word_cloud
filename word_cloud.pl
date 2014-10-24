@@ -148,7 +148,7 @@ sub filter_hash { # gets 15% of most common words
 
 	my $i = 0;
 
-	foreach my $key (sort {$words_hash->{$b} cmp $words_hash->{$a}} (keys %{ $words_hash }) ) {
+	foreach my $key (sort {$words_hash->{$b} <=> $words_hash->{$a} or $a cmp $b} (keys %{ $words_hash }) ) {
 		last if ($i == $stop_num);
 			# if words > 100, the program becomes too slow
 		$smaller_hash{$key} = $words_hash->{$key};
@@ -173,10 +173,16 @@ sub create_tmp {
 	open my $tmp_fh, '>', $tmp_name
 		or die "Can't create $tmp_name : $!\n";
 	
-	my ($first_elem) = sort {$words_hash->{$b} <=> $words_hash->{$a}} keys %{$words_hash};
+	# If max-value and min-value are equal there is an error
+	# this compares both values and, if they're equal, it changes
+	# the maximum one to x+1
 
-	if ($words_hash->{$first_elem} == 1) {
-		$words_hash->{$first_elem} = 2;
+	my ($first_elem) = sort {$words_hash->{$a} <=> $words_hash->{$b} or $a cmp $b} keys %{$words_hash};
+	my ($last_elem)  = sort {$words_hash->{$b} <=> $words_hash->{$a} or $b cmp $a} keys %{$words_hash};
+	print "$first_elem and $last_elem\n";
+
+	if ($words_hash->{$first_elem} == $words_hash->{$last_elem}) {
+		$words_hash->{$first_elem}++;
 	}
 
 	foreach my $word (sort {$words_hash->{$b} <=> $words_hash->{$a}} keys %{$words_hash}) {
