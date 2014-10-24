@@ -124,6 +124,7 @@ sub read_file {
 
 	} # while
 
+	die "Empty txt file!\n" unless (%text_words);
 	return(%text_words);
 
 } # sub read_file
@@ -191,9 +192,9 @@ sub make_wc {
 
 	if (-d 'word_cloud') {
 		$name = "word_cloud/$name";
-		print STDERR "\nSaving files in word_cloud/\n";
+		print STDERR "\nSaving $name file in word_cloud/\n";
 	} else {
-		print STDERR "\nword_cloud/ directory doesn't exist, saving files in current directory\n";
+		print STDERR "\nword_cloud/ directory doesn't exist, saving $name file in current directory\n";
 	}
 
 	my $wioz = App::WIoZ->new(
