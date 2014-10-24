@@ -177,15 +177,17 @@ sub create_tmp {
 	# this compares both values and, if they're equal, it changes
 	# the maximum one to x+1
 
-	my ($first_elem) = sort {$words_hash->{$a} <=> $words_hash->{$b} or $a cmp $b} keys %{$words_hash};
-	my ($last_elem)  = sort {$words_hash->{$b} <=> $words_hash->{$a} or $b cmp $a} keys %{$words_hash};
-	print "$first_elem and $last_elem\n";
+	my @key_array = sort {$words_hash->{$b} <=> $words_hash->{$a} or $a cmp $b} 
+							keys %{$words_hash};
+
+	my $first_elem = $key_array[0];
+	my $last_elem  = $key_array[-1];
 
 	if ($words_hash->{$first_elem} == $words_hash->{$last_elem}) {
 		$words_hash->{$first_elem}++;
 	}
 
-	foreach my $word (sort {$words_hash->{$b} <=> $words_hash->{$a}} keys %{$words_hash}) {
+	foreach my $word (@key_array) {
 		print $tmp_fh "$word;$words_hash->{$word}\n";
 	}
 
