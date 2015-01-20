@@ -27,8 +27,30 @@
 
 use warnings;
 use strict;
+use Getopt::Std;
 use Data::Dumper;
 use App::WIoZ;
+
+my %options = ();
+getopts("h", \%options);
+
+if (defined $options{h} or @ARGV == 0) {
+	print qq(
+====================
+word_cloud.pl
+====================
+This script takes an article in plain text and creates a word cloud out of it.
+
+		Arguments:	Article.
+				Stopwords file.
+
+		Options:		
+				-h : help
+
+);
+
+	exit(1);	
+}
 
 
 die "\nYou have to introduce 2 files as command line arguments:\n" .
@@ -173,8 +195,8 @@ sub create_tmp {
 	open my $tmp_fh, '>', $tmp_name
 		or die "Can't create $tmp_name : $!\n";
 	
-	# If max-value and min-value are equal there is an error
-	# this compares both values and, if they're equal, it changes
+	# If max-value and min-value are equal there is an error.
+	# This compares both values and, if they're equal, it changes
 	# the maximum one to x+1
 
 	my @key_array = sort {$words_hash->{$b} <=> $words_hash->{$a} or $a cmp $b} 
